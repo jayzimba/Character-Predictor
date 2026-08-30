@@ -1,0 +1,49 @@
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+ENV/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+
+# Trained model artefacts (regenerate; do not commit binaries)
+backend/app/ml/models/*.joblib
+backend/app/ml/models/*.pkl
+backend/app/ml/models/*.json
+!backend/app/ml/models/.gitkeep
+
+# Uploaded datasets (may contain personal data)
+backend/uploads/
+backend/app/ml/dataset/uploads/
+
+# Node
+node_modules/
+frontend/dist/
+frontend/.vite/
+*.log
+npm-debug.log*
+
+# OS and editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Jupyter
+.ipynb_checkpoints/
