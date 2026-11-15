@@ -1,0 +1,62 @@
+name: temperament-lab
+
+# Isolated stack: own network, own MariaDB, own HTTP port.
+# Does not bind 80, 443, 3306, 8080, or 3001 used by cPanel / MyVows / Tomcat.
+
+services:
+  db:
+    image: mariadb:11.4
+    container_name: temperament-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: personality_classification
+      MYSQL_USER: temperament
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - temperament-db:/var/lib/mysql
+    networks:
+      - temperament
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+    # No host ports — not the VPS MariaDB on 3306.
+
+  api:
+    build:
+      context: ./backend
+    container_name: temperament-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: .env
+    volumes:
+      - temperament-models:/app/app/ml/models
+    networks:
+      - temperament
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: /api
+    container_name: temperament-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "9100:80"
+    networks:
+      - temperament
+
+networks:
+  temperament:
+    name: temperament-lab
+    driver: bridge
+
+volumes:
+  temperament-db:
+  temperament-models:
