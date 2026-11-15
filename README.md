@@ -133,16 +133,12 @@ pytest
 
 API tests cover authentication, RBAC, owner isolation, Likert privacy, and security headers (`pytest`). Frontend checks are done in the browser during each phase.
 
-## Screenshots
+## Screenshots and user manual
 
-_Placeholders — add after the UI phases._
+Microsoft Edge walkthrough, access steps, and UML diagrams:
 
-- Landing page
-- User dashboard
-- Assessment flow
-- Results page
-- Admin dashboard
-- Model comparison
+- [docs/user-manual/USER_MANUAL.md](docs/user-manual/USER_MANUAL.md)
+- Screenshots: [docs/user-manual/screenshots/](docs/user-manual/screenshots/)
 
 ## API endpoints
 
