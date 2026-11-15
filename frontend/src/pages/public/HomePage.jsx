@@ -83,6 +83,8 @@ export default function HomePage() {
         <img
           src="/landing/hero.jpg"
           alt=""
+          fetchPriority="high"
+          decoding="async"
           className="animate-kenburns absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/15" />
@@ -152,6 +154,8 @@ export default function HomePage() {
             <img
               src="/landing/research.jpg"
               alt="A research workstation with abstract model visualisations"
+              loading="lazy"
+              decoding="async"
               className="h-full min-h-[22rem] w-full object-cover object-[center_65%] transition duration-700 hover:scale-[1.03]"
             />
           </Reveal>
@@ -199,6 +203,8 @@ export default function HomePage() {
                 <img
                   src={TYPE_IMAGES[item.code] || '/landing/hero.jpg'}
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                   className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/25 to-transparent" />
@@ -223,6 +229,8 @@ export default function HomePage() {
               <img
                 src="/landing/benefits.jpg"
                 alt=""
+                loading="lazy"
+                decoding="async"
                 className="absolute inset-0 h-full w-full object-cover object-center"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-ink/80 via-ink/45 to-ink/10" />

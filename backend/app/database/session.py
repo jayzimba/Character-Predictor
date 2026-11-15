@@ -58,7 +58,18 @@ def ensure_database_exists() -> None:
     if not database_name:
         raise ValueError("DATABASE_URL must include a database name.")
 
-    admin_engine = create_engine(url.set(database="mysql"))
+    target_engine = create_engine(url)
+    try:
+        with target_engine.connect() as connection:
+            connection.execute(text("SELECT 1"))
+        return
+    except Exception:
+        pass
+    finally:
+        target_engine.dispose()
+
+    # App users from Docker/MariaDB images cannot use the `mysql` system schema.
+    admin_engine = create_engine(url.set(database=None))
     with admin_engine.connect() as connection:
         connection.execute(
             text(

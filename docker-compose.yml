@@ -15,8 +15,11 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - temperament-db:/var/lib/mysql
+    hostname: db
     networks:
-      - temperament
+      temperament:
+        ipv4_address: 10.91.70.10
+        aliases: [db]
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 5s
@@ -28,15 +31,20 @@ services:
     build:
       context: ./backend
     container_name: temperament-api
+    hostname: api
     restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
     env_file: .env
+    extra_hosts:
+      - "db:10.91.70.10"
     volumes:
       - temperament-models:/app/app/ml/models
     networks:
-      - temperament
+      temperament:
+        ipv4_address: 10.91.70.20
+        aliases: [api]
 
   web:
     build:
@@ -44,18 +52,26 @@ services:
       args:
         VITE_API_URL: /api
     container_name: temperament-web
+    hostname: web
     restart: unless-stopped
     depends_on:
       - api
+    extra_hosts:
+      - "api:10.91.70.20"
     ports:
       - "9100:80"
     networks:
-      - temperament
+      temperament:
+        ipv4_address: 10.91.70.30
+        aliases: [web]
 
+# Pre-created with --disable-dns: cPanel PowerDNS already binds host UDP 53,
+# so Podman aardvark-dns cannot start on the default bridge.
+# extra_hosts + static IPs replace container DNS for db/api.
 networks:
   temperament:
     name: temperament-lab
-    driver: bridge
+    external: true
 
 volumes:
   temperament-db:
