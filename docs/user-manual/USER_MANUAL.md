@@ -788,5 +788,6 @@ That script launches the installed Microsoft Edge (`channel: msedge`) and writes
 
 ## Related documents
 
+- [Project-owners training script](PROJECT_OWNERS_TRAINING.md) — live facilitator order from an empty database
 - [Architecture](../ARCHITECTURE.md) — ERD, API plan, defence notes
 - [Project README](../../README.md) — stack, local setup, endpoint list

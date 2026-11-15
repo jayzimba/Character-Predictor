@@ -138,6 +138,7 @@ API tests cover authentication, RBAC, owner isolation, Likert privacy, and secur
 Microsoft Edge walkthrough, access steps, and UML diagrams:
 
 - [docs/user-manual/USER_MANUAL.md](docs/user-manual/USER_MANUAL.md)
+- Trainer script for project owners: [docs/user-manual/PROJECT_OWNERS_TRAINING.md](docs/user-manual/PROJECT_OWNERS_TRAINING.md)
 - Screenshots: [docs/user-manual/screenshots/](docs/user-manual/screenshots/)
 
 ## API endpoints
