@@ -139,7 +139,7 @@ def evaluate_estimators(
 
     warnings = [
         "These metrics were computed with sklearn.metrics on the held-out test fold.",
-        "They are not hard-coded. A later phase serves predictions from an active model.",
+        "They are not hard-coded. Live predictions use the one ACTIVE registered model.",
     ]
     if is_synthetic or prepared.report.is_synthetic:
         warnings.append(

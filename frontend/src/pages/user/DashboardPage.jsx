@@ -42,9 +42,9 @@ export default function DashboardPage() {
     : 'Start an assessment to begin'
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div>
       <p className="text-sm font-medium text-teal">Your workspace</p>
-      <h1 className="mt-1 font-serif text-3xl text-ink">Welcome back, {user.first_name}</h1>
+      <h1 className="mt-1 font-serif text-2xl text-ink sm:text-3xl">Welcome back, {user.first_name}</h1>
       <p className="mt-2 max-w-2xl text-slate">
         This summary is read from your saved assessments. Cards stay empty until
         you complete a questionnaire — nothing here is invented.
@@ -135,7 +135,7 @@ export default function DashboardPage() {
             <p className="font-serif text-xl text-ink">View My Results</p>
             <p className="mt-1 text-sm text-slate">
               {hasResult
-                ? `${summary.latest_personality.name} · full write-up arrives with the results page`
+                ? `${summary.latest_personality.name} · strengths, mix and development notes`
                 : 'No stored result to open yet'}
             </p>
           </Link>

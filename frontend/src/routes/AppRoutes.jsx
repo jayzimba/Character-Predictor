@@ -9,6 +9,7 @@ import RegisterPage from '../pages/public/RegisterPage'
 import SetupStatusPage from '../pages/public/SetupStatusPage'
 import AdminDashboardPage from '../pages/admin/AdminDashboardPage'
 import AnalyticsPage from '../pages/admin/AnalyticsPage'
+import AuditLogsPage from '../pages/admin/AuditLogsPage'
 import AssessmentsPage from '../pages/admin/AssessmentsPage'
 import DatasetPage from '../pages/admin/DatasetPage'
 import ModelTrainingPage from '../pages/admin/ModelTrainingPage'
@@ -57,6 +58,7 @@ export default function AppRoutes() {
           <Route path="dataset" element={<DatasetPage />} />
           <Route path="training" element={<ModelTrainingPage />} />
           <Route path="analytics" element={<AnalyticsPage />} />
+          <Route path="audit" element={<AuditLogsPage />} />
         </Route>
       </Route>
     </Routes>

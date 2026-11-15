@@ -13,7 +13,7 @@ def test_root_returns_current_phase_metadata():
 
     assert response.status_code == 200
     assert body["success"] is True
-    assert body["data"]["phase"] == 13
+    assert body["data"]["phase"] == 21
 
 
 def test_health_endpoint():

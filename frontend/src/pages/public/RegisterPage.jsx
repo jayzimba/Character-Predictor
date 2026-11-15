@@ -60,10 +60,18 @@ export default function RegisterPage() {
       eyebrow="Create an account"
       title="Start with a short profile"
       lede="New accounts always receive the USER role. Administrators are created separately for the research console."
+      image="/landing/auth-register.jpg"
+      imageAlt="A sunlit university courtyard with a notebook and tablet"
+      points={[
+        'New accounts always receive the USER role.',
+        'You can save progress before you submit.',
+        'Results are tendencies, not a medical label.',
+      ]}
     >
       <h2 className="font-serif text-2xl text-ink">Get started</h2>
       <p className="mt-2 text-sm text-slate">
-        Password must be at least eight characters and include a letter and a number.
+        Password must be 8–72 characters and include a letter and a number. New
+        accounts always receive the USER role.
       </p>
       <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
         <div className="grid gap-4 sm:grid-cols-2">
@@ -122,7 +130,7 @@ export default function RegisterPage() {
         <button
           type="submit"
           disabled={busy}
-          className="w-full rounded-md bg-teal py-2.5 text-sm font-medium text-white hover:bg-teal-dark disabled:opacity-60"
+          className="btn-press w-full rounded-full bg-teal py-3 text-sm font-medium text-white hover:bg-teal-dark disabled:opacity-60"
         >
           {busy ? 'Creating account…' : 'Create account'}
         </button>

@@ -171,7 +171,7 @@ export default function AssessmentPage() {
 
   if (status === 'submitted') {
     return (
-      <div className="mx-auto max-w-xl">
+      <div>
         <p className="text-sm font-medium text-teal">
           {prediction ? 'Classified' : 'Submitted'}
         </p>
@@ -199,19 +199,29 @@ export default function AssessmentPage() {
             classification to see a stored type and mix.
           </p>
         )}
-        <Link
-          to="/app"
-          className="mt-8 inline-flex rounded-md bg-teal px-4 py-2.5 text-sm font-medium text-white hover:bg-teal-dark"
-        >
-          Back to dashboard
-        </Link>
+        <div className="mt-8 flex flex-wrap gap-3">
+          {prediction && (
+            <Link
+              to={`/app/results?assessment_id=${assessment?.id ?? prediction.assessment_id}`}
+              className="inline-flex rounded-md bg-teal px-4 py-2.5 text-sm font-medium text-white hover:bg-teal-dark"
+            >
+              View full result
+            </Link>
+          )}
+          <Link
+            to="/app"
+            className="inline-flex rounded-md border border-line bg-card px-4 py-2.5 text-sm font-medium text-ink hover:border-teal"
+          >
+            Back to dashboard
+          </Link>
+        </div>
       </div>
     )
   }
 
   if (status === 'consent') {
     return (
-      <div className="mx-auto max-w-xl">
+      <div>
         <p className="text-sm font-medium text-teal">Before you begin</p>
         <h1 className="mt-1 font-serif text-3xl text-ink">{instrument.name}</h1>
         <p className="mt-3 text-slate">{instrument.description}</p>
@@ -253,31 +263,31 @@ export default function AssessmentPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div>
       <p className="text-sm font-medium text-teal">Question {index + 1} of {total}</p>
-      <h1 className="mt-1 font-serif text-3xl text-ink">{instrument.name}</h1>
+      <h1 className="mt-1 font-serif text-2xl text-ink sm:text-3xl">{instrument.name}</h1>
       <div className="mt-4 h-2 overflow-hidden rounded-full bg-sand">
-        <div className="h-full bg-teal" style={{ width: `${percent}%` }} />
+        <div className="h-full bg-teal transition-[width] duration-200" style={{ width: `${percent}%` }} />
       </div>
       <p className="mt-2 text-sm text-slate">
         {answeredCount} saved · {percent}% complete
       </p>
 
       {current && (
-        <section className="mt-8 rounded-xl border border-line bg-card p-6">
+        <section className="mt-8 rounded-xl border border-line bg-card p-4 sm:p-6">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">
             {current.category.name}
           </p>
-          <h2 className="mt-3 font-serif text-2xl text-ink">{current.question_text}</h2>
+          <h2 className="mt-3 font-serif text-xl text-ink sm:text-2xl">{current.question_text}</h2>
           <fieldset className="mt-6">
             <legend className="sr-only">Likert response</legend>
-            <div className="grid gap-2 sm:grid-cols-5">
+            <div className="grid grid-cols-5 gap-1 sm:gap-2">
               {instrument.likert_scale.map((option) => {
                 const selected = responses[current.id] === option.value
                 return (
                   <label
                     key={option.value}
-                    className={`cursor-pointer rounded-md border px-3 py-3 text-center text-sm ${
+                    className={`flex min-h-[4.75rem] cursor-pointer flex-col items-center justify-center rounded-md border px-1 py-2 text-center sm:min-h-0 sm:px-3 sm:py-3 ${
                       selected
                         ? 'border-teal bg-sand text-ink'
                         : 'border-line bg-paper text-slate'
@@ -291,8 +301,8 @@ export default function AssessmentPage() {
                       checked={selected}
                       onChange={() => persist(current.id, option.value)}
                     />
-                    <span className="block font-medium">{option.value}</span>
-                    <span className="mt-1 block text-xs">{option.label}</span>
+                    <span className="block text-sm font-medium sm:text-base">{option.value}</span>
+                    <span className="mt-1 block text-[10px] leading-tight sm:text-xs">{option.label}</span>
                   </label>
                 )
               })}
@@ -307,12 +317,12 @@ export default function AssessmentPage() {
         </p>
       )}
 
-      <div className="mt-6 flex flex-wrap items-center gap-3">
+      <div className="sticky bottom-0 z-10 -mx-4 mt-6 grid grid-cols-2 gap-2 border-t border-line bg-paper/95 px-4 py-3 backdrop-blur sm:static sm:mx-0 sm:flex sm:flex-wrap sm:items-center sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:backdrop-blur-none">
         <button
           type="button"
           disabled={index === 0}
           onClick={() => setIndex((currentIndex) => currentIndex - 1)}
-          className="rounded-md border border-line bg-card px-4 py-2 text-sm text-ink disabled:opacity-40"
+          className="rounded-md border border-line bg-card px-4 py-2.5 text-sm text-ink disabled:opacity-40"
         >
           Previous
         </button>
@@ -320,7 +330,7 @@ export default function AssessmentPage() {
           type="button"
           disabled={index >= total - 1}
           onClick={() => setIndex((currentIndex) => currentIndex + 1)}
-          className="rounded-md border border-line bg-card px-4 py-2 text-sm text-ink disabled:opacity-40"
+          className="rounded-md border border-line bg-card px-4 py-2.5 text-sm text-ink disabled:opacity-40"
         >
           Next
         </button>
@@ -328,7 +338,7 @@ export default function AssessmentPage() {
           type="button"
           disabled={busy || responses[current?.id] == null}
           onClick={handleSave}
-          className="rounded-md border border-line bg-card px-4 py-2 text-sm text-ink disabled:opacity-40"
+          className="rounded-md border border-line bg-card px-4 py-2.5 text-sm text-ink disabled:opacity-40"
         >
           Save progress
         </button>
@@ -336,7 +346,7 @@ export default function AssessmentPage() {
           type="button"
           disabled={!complete || busy}
           onClick={handleSubmit}
-          className="rounded-md bg-teal px-4 py-2 text-sm font-medium text-white hover:bg-teal-dark disabled:opacity-40"
+          className="rounded-md bg-teal px-4 py-2.5 text-sm font-medium text-white hover:bg-teal-dark disabled:opacity-40"
         >
           {busy ? 'Submitting…' : 'Submit assessment'}
         </button>

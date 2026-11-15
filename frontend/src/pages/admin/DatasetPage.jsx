@@ -6,6 +6,7 @@ import {
   validateDemoDataset,
   validateUploadedDataset,
 } from '../../api/datasets'
+import TableShell from '../../components/ui/TableShell'
 
 function CountTable({ title, counts }) {
   const entries = Object.entries(counts || {})
@@ -179,7 +180,7 @@ export default function DatasetPage() {
           )}
 
           {report.preview?.length > 0 && (
-            <div className="overflow-x-auto rounded-xl border border-line bg-card">
+            <TableShell className="">
               <table className="min-w-full text-left text-xs">
                 <thead className="border-b border-line text-muted">
                   <tr>
@@ -202,7 +203,7 @@ export default function DatasetPage() {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </TableShell>
           )}
         </section>
       )}

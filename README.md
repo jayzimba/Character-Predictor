@@ -88,8 +88,8 @@ App: [http://127.0.0.1:5173](http://127.0.0.1:5173)
 The Vite dev server proxies `/api` to FastAPI.
 
 Public routes: `/`, `/about`, `/personality-types`, `/login`, `/register`.  
-Signed-in user: `/app`, `/app/assessment`, `/app/history`, `/app/profile`.  
-Admin only: `/admin` and its sidebar pages, including `/admin/dataset` for CSV validation.  
+Signed-in user: `/app`, `/app/assessment`, `/app/results`, `/app/history`, `/app/profile`.  
+Admin only: `/admin`, `/admin/users`, `/admin/assessments`, `/admin/questions`, `/admin/models`, `/admin/dataset`, `/admin/training`, `/admin/analytics`, `/admin/audit`.  
 Developer checks remain at `/dev`.
 
 ### Database setup
@@ -117,7 +117,7 @@ Phase 10 prepares features. Phase 11 fits Decision Tree, Naive Bayes and KNN on 
 python -m app.ml.dataset.generate_demo
 ```
 
-That writes a bundled `DEMO/SYNTHETIC` CSV. Administrators validate it at `/admin/dataset`, train at `/admin/training`, and evaluate at `/admin/models`. Users classify a completed assessment with `POST /api/predictions/classify`. The detailed results page is **Phase 14**.
+That writes a bundled `DEMO/SYNTHETIC` CSV. Administrators validate it at `/admin/dataset`, train at `/admin/training`, and evaluate at `/admin/models`. Users classify a completed assessment with `POST /api/predictions/classify`, open the write-up at `/app/results`, and list past attempts at `/app/history`.
 
 ### Running the application
 
@@ -131,7 +131,7 @@ source .venv/bin/activate
 pytest
 ```
 
-Frontend tests will be added when UI flows exist.
+API tests cover authentication, RBAC, owner isolation, Likert privacy, and security headers (`pytest`). Frontend checks are done in the browser during each phase.
 
 ## Screenshots
 
@@ -146,7 +146,7 @@ _Placeholders — add after the UI phases._
 
 ## API endpoints
 
-Implemented through Phase 13:
+Implemented through Phase 21:
 
 | Method | Path | Description |
 |---|---|---|
@@ -162,9 +162,14 @@ Implemented through Phase 13:
 | GET / PATCH | `/api/users/me` | View or update own profile |
 | GET | `/api/users/me/dashboard` | Assessment counts, last result and stored mix |
 | POST | `/api/users/me/password` | Change password while signed in |
+| GET | `/api/admin/overview` | User, assessment and stored-type totals (ADMIN) |
 | GET | `/api/admin/users` | List users (ADMIN only) |
+| GET | `/api/admin/assessments` | Assessment overview without Likert answers (ADMIN) |
 | GET | `/api/questions` | Active Likert instrument (authenticated; no scoring metadata) |
 | GET | `/api/admin/questions` | Full question catalogue including weight and reverse scoring |
+| GET | `/api/admin/questions/options` | Category and personality options for the question form (ADMIN) |
+| POST | `/api/admin/questions` | Create a question on the active version (ADMIN) |
+| PATCH | `/api/admin/questions/{id}` | Update or deactivate a question; scoring fields lock after answers (ADMIN) |
 | POST | `/api/assessments` | Start or resume an in-progress assessment (consent required) |
 | GET | `/api/assessments` | List the caller's assessments |
 | GET | `/api/assessments/{id}` | Assessment plus saved Likert values (owner only) |
@@ -182,18 +187,27 @@ Implemented through Phase 13:
 | POST | `/api/admin/models/evaluate/demo` | Score the DEMO test fold and register models (ADMIN) |
 | POST | `/api/admin/models/evaluate` | Score an uploaded CSV's test fold and register models (ADMIN) |
 | POST | `/api/admin/models/activate-selected` | Make the last evaluation winner ACTIVE (ADMIN) |
+| GET | `/api/admin/models/{id}` | One registered model with stored metrics and prediction count (ADMIN) |
+| PATCH | `/api/admin/models/{id}` | Update administrator notes only (ADMIN) |
 | POST | `/api/admin/models/{id}/activate` | Make one registered model ACTIVE (ADMIN) |
+| POST | `/api/admin/models/{id}/archive` | Archive a model; stored predictions keep `model_id` (ADMIN) |
 | POST | `/api/predictions/classify` | Classify a completed assessment (owner or ADMIN) |
 | GET | `/api/predictions/{assessment_id}` | Stored prediction for that assessment (owner or ADMIN) |
-
-Planned groups: `/api/analytics`.
+| GET | `/api/results/latest` | Latest classified result plus type write-up (owner) |
+| GET | `/api/results/{assessment_id}` | Stored result plus type write-up (owner or ADMIN) |
+| GET | `/api/history` | The caller's assessments with stored type and confidence |
+| GET | `/api/analytics` | Stored assessment and prediction aggregates, no Likert answers (ADMIN) |
+| GET | `/api/admin/audit-logs` | Administrator actions already stored; no Likert answers or passwords (ADMIN) |
 
 ## Security
 
-- Passwords are hashed with bcrypt. Never stored in plaintext.
-- JWT access tokens; role checks on the server.
+- Passwords are hashed with bcrypt (max 72 bytes). Never stored in plaintext.
+- JWT access tokens carry only `sub`, `role`, `iat` and `exp`. Role checks use the database, not the token claim.
+- Auth endpoints are rate-limited. OpenAPI docs are off when `APP_DEBUG=false`.
+- Responses add `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy` and `Cache-Control: no-store`.
 - Secrets live in `.env` (not committed). Use `.env.example` as the template.
-- SQLAlchemy parameterised queries; Pydantic validation at the boundary.
+- SQLAlchemy parameterised queries; Pydantic validation at the boundary. Validation errors do not echo submitted passwords.
+- Administrators review an audit log of model and question changes. Likert answers are never stored there.
 
 ## Privacy and ethics
 
@@ -206,7 +220,7 @@ Planned groups: `/api/analytics`.
 
 - No real labelled clinical dataset is assumed. Early models may use clearly marked synthetic data.
 - Four-temperament labels are a simplified educational model.
-- The user dashboard is live; it stays empty until assessments exist. The admin dashboard is still a placeholder.
+- The user dashboard, results page, and history are live; they stay empty until assessments exist. Admin overview, users, assessments, questions, model administration, analytics, and the audit log are live.
 - Password-reset tokens are returned in the API only while `APP_DEBUG=true`. Production would email them.
 - Schema tests run on SQLite; production target remains MySQL.
 

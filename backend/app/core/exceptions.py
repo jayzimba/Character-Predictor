@@ -49,8 +49,12 @@ def register_exception_handlers(app: FastAPI) -> None:
         request: Request,
         exc: RequestValidationError,
     ):
+        # Field path and message only — never echo submitted values (passwords).
         details = [
-            {"field": ".".join(str(part) for part in err.get("loc", [])), "message": err.get("msg")}
+            {
+                "field": ".".join(str(part) for part in err.get("loc", [])),
+                "message": err.get("msg"),
+            }
             for err in exc.errors()
         ]
         return error_response(

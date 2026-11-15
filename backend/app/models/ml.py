@@ -1,8 +1,7 @@
 """Trained model registry and evaluation metrics.
 
 Only one row should have status=ACTIVE at a time. That rule is enforced
-in the model-administration service (Phase 18), not with a fragile
-database enum.
+in the model-administration service, not with a fragile database enum.
 """
 
 from __future__ import annotations

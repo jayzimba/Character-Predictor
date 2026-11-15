@@ -7,3 +7,15 @@ export function fetchActiveQuestionnaire() {
 export function fetchAdminQuestions() {
   return apiClient.get('/admin/questions')
 }
+
+export function fetchQuestionOptions() {
+  return apiClient.get('/admin/questions/options')
+}
+
+export function createAdminQuestion(payload) {
+  return apiClient.post('/admin/questions', payload)
+}
+
+export function updateAdminQuestion(questionId, payload) {
+  return apiClient.patch(`/admin/questions/${questionId}`, payload)
+}

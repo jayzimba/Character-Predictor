@@ -33,6 +33,8 @@ export default function LoginPage() {
       eyebrow="Welcome back"
       title="Sign in to continue"
       lede="Use the same account you created for assessments. Administrators are directed to the research console."
+      image="/landing/auth-login.jpg"
+      imageAlt="A quiet research studio with a four-colour classification display"
     >
       <h2 className="font-serif text-2xl text-ink">Login</h2>
       <p className="mt-2 text-sm text-slate">Email and password only. Roles are checked on the server.</p>
@@ -61,7 +63,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={busy}
-          className="w-full rounded-md bg-teal py-2.5 text-sm font-medium text-white hover:bg-teal-dark disabled:opacity-60"
+          className="btn-press w-full rounded-full bg-teal py-3 text-sm font-medium text-white hover:bg-teal-dark disabled:opacity-60"
         >
           {busy ? 'Signing in…' : 'Sign in'}
         </button>

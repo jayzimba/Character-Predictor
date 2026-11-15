@@ -12,19 +12,14 @@ from app.ml.evaluate import EVAL_FILENAME, EvaluationError, evaluate_estimators
 from app.ml.preprocessing import PreparedDataset
 from app.ml.train import load_artefacts, load_last_run, write_run_dict
 from app.repositories import ml_models as model_repository
-from app.schemas.evaluation import (
-    EvaluationOut,
-    ModelScoresOut,
-    RegistryMetricOut,
-    RegistryModelOut,
-)
+from app.schemas.evaluation import EvaluationOut, ModelScoresOut, RegistryModelOut
 from app.services import datasets as dataset_service
 from app.services import training as training_service
 
 DISCLAIMER = (
     "Held-out metrics come from sklearn.metrics on the test fold. "
     "DEMO/SYNTHETIC scores must not be reported as research findings. "
-    "Activate one registered model before live prediction."
+    "Live predictions use the one ACTIVE registered model."
 )
 
 
@@ -44,51 +39,10 @@ def last_evaluation() -> EvaluationOut | None:
 
 
 def list_registry(session: Session) -> list[RegistryModelOut]:
-    selected = None
-    latest = last_evaluation()
-    if latest:
-        selected = latest.selected_model_id
-    rows = []
-    for model in model_repository.list_registered(session):
-        metric = model.metrics[0] if model.metrics else None
-        rows.append(
-            RegistryModelOut(
-                id=model.id,
-                algorithm=model.algorithm,
-                version=model.version,
-                status=model.status,
-                dataset_name=model.dataset_name,
-                dataset_size=model.dataset_size,
-                train_size=model.train_size,
-                test_size=model.test_size,
-                is_synthetic_dataset=model.is_synthetic_dataset,
-                file_path=model.file_path,
-                trained_at=model.trained_at,
-                notes=model.notes,
-                selected=model.id == selected,
-                metrics=(
-                    RegistryMetricOut(
-                        accuracy=float(metric.accuracy),
-                        precision_macro=float(metric.precision_macro),
-                        recall_macro=float(metric.recall_macro),
-                        f1_macro=float(metric.f1_macro),
-                        precision_weighted=float(metric.precision_weighted),
-                        recall_weighted=float(metric.recall_weighted),
-                        f1_weighted=float(metric.f1_weighted),
-                        confusion_matrix=metric.confusion_matrix,
-                        cv_folds=metric.cv_folds,
-                        cv_mean_accuracy=(
-                            float(metric.cv_mean_accuracy)
-                            if metric.cv_mean_accuracy is not None
-                            else None
-                        ),
-                    )
-                    if metric
-                    else None
-                ),
-            )
-        )
-    return rows
+    """Kept for callers that still import evaluation.list_registry."""
+    from app.services import models_admin as models_admin_service
+
+    return models_admin_service.list_models(session)
 
 
 def _evaluate_prepared(

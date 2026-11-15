@@ -1,5 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import BrandLogo from '../components/BrandLogo'
+import PageFade from '../components/PageFade'
+import SkipLink from '../components/SkipLink'
 import SiteFooter from '../components/public/SiteFooter'
 import { useAuth } from '../context/AuthContext'
 
@@ -20,16 +23,21 @@ export default function PublicLayout() {
   const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
 
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [location.pathname, location.hash])
+
   function closeMenu() {
     setMenuOpen(false)
   }
 
   return (
     <div className="flex min-h-screen flex-col bg-paper">
-      <header className="sticky top-0 z-20 border-b border-line bg-card/95 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-4">
-          <Link to="/" className="text-sm font-semibold tracking-wide text-teal">
-            Temperament Lab
+      <SkipLink />
+      <header className="sticky top-0 z-20 border-b border-line/70 bg-card/80 backdrop-blur-md">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-4">
+          <Link to="/" className="rounded-md" aria-label="Temperament Lab home">
+            <BrandLogo />
           </Link>
           <nav aria-label="Primary" className="hidden items-center gap-6 text-sm md:flex">
             {links.map((link) =>
@@ -76,7 +84,7 @@ export default function PublicLayout() {
                 </Link>
                 <Link
                   to="/register"
-                  className="rounded-md bg-teal px-3 py-1.5 font-medium text-white hover:bg-teal-dark"
+                  className="btn-press rounded-full bg-teal px-4 py-2 font-medium text-white hover:bg-teal-dark"
                 >
                   Get Started
                 </Link>
@@ -85,7 +93,7 @@ export default function PublicLayout() {
           </div>
           <button
             type="button"
-            className="text-sm text-slate md:hidden"
+            className="rounded-md px-3 py-2 text-sm text-slate hover:bg-sand hover:text-ink md:hidden"
             aria-expanded={menuOpen}
             aria-controls="mobile-nav"
             onClick={() => setMenuOpen((open) => !open)}
@@ -97,23 +105,53 @@ export default function PublicLayout() {
           <nav
             id="mobile-nav"
             aria-label="Mobile"
-            className="space-y-3 border-t border-line px-6 py-4 text-sm md:hidden"
+            className="animate-menu space-y-1 border-t border-line px-4 py-3 text-sm md:hidden"
           >
             {links.map((link) => (
-              <Link key={link.to} to={link.to} className="block text-slate" onClick={closeMenu}>
+              <Link
+                key={link.to}
+                to={link.to}
+                className="block rounded-md px-2 py-2.5 text-slate hover:bg-sand"
+                onClick={closeMenu}
+              >
                 {link.label}
               </Link>
             ))}
             {user ? (
-              <Link to={isAdmin ? '/admin' : '/app'} className="block text-teal" onClick={closeMenu}>
-                {isAdmin ? 'Admin' : 'Dashboard'}
-              </Link>
+              <>
+                <Link
+                  to={isAdmin ? '/admin' : '/app'}
+                  className="block rounded-md px-2 py-2.5 text-teal hover:bg-sand"
+                  onClick={closeMenu}
+                >
+                  {isAdmin ? 'Admin' : 'Dashboard'}
+                </Link>
+                <button
+                  type="button"
+                  className="block w-full rounded-md px-2 py-2.5 text-left text-slate hover:bg-sand"
+                  onClick={() => {
+                    closeMenu()
+                    logout()
+                    navigate('/')
+                  }}
+                >
+                  Sign out
+                </button>
+              </>
             ) : (
               <>
-                <Link to="/login" className="block text-slate" onClick={closeMenu}>
+                <Link
+                  to="/login"
+                  className="block rounded-md px-2 py-2.5 text-slate hover:bg-sand"
+                  onClick={closeMenu}
+                >
                   Login
                 </Link>
-                <Link to="/register" className="block text-teal" onClick={closeMenu}>
+                <Link
+                  to="/register"
+                  className="block rounded-md px-2 py-2.5 text-teal hover:bg-sand"
+                  onClick={closeMenu}
+                >
                   Get Started
                 </Link>
               </>
@@ -121,8 +159,10 @@ export default function PublicLayout() {
           </nav>
         )}
       </header>
-      <div className="flex-1">
-        <Outlet />
+      <div id="main-content" className="flex flex-1 flex-col">
+        <PageFade>
+          <Outlet />
+        </PageFade>
       </div>
       <SiteFooter />
     </div>

@@ -1,6 +1,6 @@
 """User persistence. No password or JWT logic here."""
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.models import Role, User
@@ -28,6 +28,17 @@ def get_role_by_code(session: Session, code: str) -> Role | None:
 def list_users(session: Session) -> list[User]:
     statement = select(User).options(selectinload(User.role)).order_by(User.id)
     return list(session.scalars(statement).all())
+
+
+def count_users(session: Session) -> int:
+    return int(session.scalar(select(func.count(User.id))) or 0)
+
+
+def count_users_by_role(session: Session, role_code: str) -> int:
+    statement = (
+        select(func.count(User.id)).join(Role).where(Role.code == role_code)
+    )
+    return int(session.scalar(statement) or 0)
 
 
 def create_user(

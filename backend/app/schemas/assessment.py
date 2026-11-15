@@ -15,7 +15,7 @@ class AnswerIn(BaseModel):
 
 
 class AnswersRequest(BaseModel):
-    answers: list[AnswerIn] = Field(min_length=1)
+    answers: list[AnswerIn] = Field(min_length=1, max_length=200)
 
 
 class AnswerOut(BaseModel):

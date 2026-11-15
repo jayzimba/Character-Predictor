@@ -18,10 +18,22 @@ export function evaluateUploadedModels(file) {
   return apiClient.post('/admin/models/evaluate', body, { timeout: 60000 })
 }
 
+export function fetchRegisteredModel(modelId) {
+  return apiClient.get(`/admin/models/${modelId}`)
+}
+
 export function activateModel(modelId) {
   return apiClient.post(`/admin/models/${modelId}/activate`)
 }
 
 export function activateSelectedModel() {
   return apiClient.post('/admin/models/activate-selected')
+}
+
+export function archiveModel(modelId) {
+  return apiClient.post(`/admin/models/${modelId}/archive`)
+}
+
+export function updateModelNotes(modelId, notes) {
+  return apiClient.patch(`/admin/models/${modelId}`, { notes })
 }

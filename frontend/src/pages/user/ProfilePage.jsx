@@ -65,9 +65,9 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div>
       <p className="text-sm font-medium text-teal">Account</p>
-      <h1 className="mt-1 font-serif text-3xl text-ink">Profile</h1>
+      <h1 className="mt-1 font-serif text-2xl text-ink sm:text-3xl">Profile</h1>
       <p className="mt-2 text-slate">
         Name and optional demographics only. Your role cannot be changed here.
       </p>
@@ -134,6 +134,10 @@ export default function ProfilePage() {
 
       <form className="mt-6 space-y-4 rounded-xl border border-line bg-card p-6" onSubmit={handlePassword}>
         <h2 className="font-serif text-xl text-ink">Password</h2>
+        <p className="text-sm text-slate">
+          8–72 characters, with at least one letter and one number. Your role
+          cannot be changed here.
+        </p>
         <Field
           label="Current password"
           type="password"

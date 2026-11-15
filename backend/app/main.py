@@ -1,6 +1,6 @@
 """FastAPI application entry point.
 
-Phase 13: completed assessments can be classified. The results page is later.
+Phase 21: UI polishing and responsive layouts.
 """
 
 import logging
@@ -15,7 +15,9 @@ from app.api.health import router as health_router
 from app.api.v1.router import api_router
 from app.core.config import get_settings
 from app.core.exceptions import register_exception_handlers
+from app.core.openapi import openapi_urls
 from app.core.responses import success_response
+from app.core.security_headers import add_security_headers
 from app.database.session import get_engine, get_session_factory
 
 logger = logging.getLogger(__name__)
@@ -47,18 +49,18 @@ app = FastAPI(
         "Educational personality classification API. "
         "Predictions are not a clinical psychological diagnosis."
     ),
-    docs_url="/docs",
-    redoc_url="/redoc",
     lifespan=lifespan,
+    **openapi_urls(debug=settings.app_debug),
 )
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[settings.frontend_url, "http://localhost:5173"],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PATCH", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
 )
+app.middleware("http")(add_security_headers)
 
 register_exception_handlers(app)
 app.include_router(health_router, prefix=settings.api_prefix)
@@ -74,7 +76,7 @@ def root():
             "docs": "/docs",
             "health": f"{settings.api_prefix}/health",
             "ready": f"{settings.api_prefix}/health/ready",
-            "phase": 13,
+            "phase": 21,
         },
-        message="Completed assessments can be classified. The detailed results page is later.",
+        message="The interface is polished for small and large screens.",
     )

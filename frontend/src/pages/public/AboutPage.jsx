@@ -1,8 +1,8 @@
 export default function AboutPage() {
   return (
-    <main className="mx-auto max-w-3xl px-6 py-16">
+    <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6 md:py-16">
       <p className="text-sm font-medium text-teal">About the project</p>
-      <h1 className="mt-2 font-serif text-4xl text-ink">Personality classification as a research system</h1>
+      <h1 className="mt-2 font-serif text-3xl text-ink sm:text-4xl">Personality classification as a research system</h1>
       <p className="mt-4 text-lg text-slate">
         Temperament Lab is a university final-year platform that collects
         behavioural questionnaire answers, turns them into numerical features,

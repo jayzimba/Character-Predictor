@@ -3,10 +3,12 @@
 from datetime import datetime
 from decimal import Decimal
 
+from pathlib import Path
+
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
-from app.models import MLModel, ModelMetric
+from app.models import MLModel, ModelMetric, PredictionResult
 from app.models.enums import ModelStatus
 
 
@@ -102,6 +104,30 @@ def get_active(session: Session) -> MLModel | None:
     return session.scalar(statement)
 
 
+def artifact_is_present(model: MLModel) -> bool:
+    return bool(model.file_path) and Path(model.file_path).is_file()
+
+
+def prediction_counts(session: Session) -> dict[int, int]:
+    rows = session.execute(
+        select(PredictionResult.model_id, func.count())
+        .where(PredictionResult.model_id.is_not(None))
+        .group_by(PredictionResult.model_id)
+    ).all()
+    return {int(model_id): int(count) for model_id, count in rows}
+
+
+def count_predictions(session: Session, model_id: int) -> int:
+    return int(
+        session.scalar(
+            select(func.count())
+            .select_from(PredictionResult)
+            .where(PredictionResult.model_id == model_id)
+        )
+        or 0
+    )
+
+
 def activate(session: Session, model: MLModel) -> MLModel:
     current = list(
         session.scalars(
@@ -112,5 +138,17 @@ def activate(session: Session, model: MLModel) -> MLModel:
         if row.id != model.id:
             row.status = ModelStatus.ARCHIVED.value
     model.status = ModelStatus.ACTIVE.value
+    session.flush()
+    return model
+
+
+def archive(session: Session, model: MLModel) -> MLModel:
+    model.status = ModelStatus.ARCHIVED.value
+    session.flush()
+    return model
+
+
+def set_notes(session: Session, model: MLModel, notes: str) -> MLModel:
+    model.notes = notes
     session.flush()
     return model

@@ -55,5 +55,37 @@ class AdminQuestionOut(BaseModel):
     category: CategoryOut
     personality_trait: TraitOut | None = None
     version_code: str
+    answer_count: int
+    scoring_locked: bool
     created_at: datetime
     updated_at: datetime
+
+
+class QuestionWrite(BaseModel):
+    question_text: str = Field(min_length=8, max_length=2000)
+    category_code: str = Field(min_length=1, max_length=64)
+    personality_code: str = Field(min_length=1, max_length=32)
+    weight: float = Field(gt=0, le=10)
+    reverse_scored: bool = False
+    display_order: int | None = Field(default=None, ge=1)
+
+
+class QuestionPatch(BaseModel):
+    question_text: str | None = Field(default=None, min_length=8, max_length=2000)
+    category_code: str | None = Field(default=None, min_length=1, max_length=64)
+    personality_code: str | None = Field(default=None, min_length=1, max_length=32)
+    weight: float | None = Field(default=None, gt=0, le=10)
+    reverse_scored: bool | None = None
+    display_order: int | None = Field(default=None, ge=1)
+    status: str | None = None
+
+
+class QuestionOptionOut(BaseModel):
+    code: str
+    name: str
+
+
+class QuestionOptionsOut(BaseModel):
+    version_code: str
+    categories: list[QuestionOptionOut]
+    personality_types: list[QuestionOptionOut]

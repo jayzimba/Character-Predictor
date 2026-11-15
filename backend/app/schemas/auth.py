@@ -1,29 +1,21 @@
 """Authentication request and token response schemas."""
 
-import re
-
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from app.models.enums import AgeGroup, Gender
 from app.schemas.email import EmailAddress
+from app.schemas.passwords import validate_password_complexity
 from app.schemas.user import UserOut
-
-_PASSWORD_LETTER = re.compile(r"[A-Za-z]")
-_PASSWORD_DIGIT = re.compile(r"\d")
-
-
-def validate_password_complexity(password: str) -> str:
-    if not _PASSWORD_LETTER.search(password) or not _PASSWORD_DIGIT.search(password):
-        raise ValueError("Password must contain at least one letter and one number")
-    return password
 
 
 class RegisterRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     first_name: str = Field(min_length=1, max_length=80)
     last_name: str = Field(min_length=1, max_length=80)
     email: EmailAddress
-    password: str = Field(min_length=8, max_length=128)
-    confirm_password: str = Field(min_length=8, max_length=128)
+    password: str = Field(min_length=8, max_length=72)
+    confirm_password: str = Field(min_length=8, max_length=72)
     gender: Gender | None = None
     age_group: AgeGroup | None = None
 
@@ -50,8 +42,10 @@ class RegisterRequest(BaseModel):
 
 
 class LoginRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     email: EmailAddress
-    password: str = Field(min_length=1)
+    password: str = Field(min_length=1, max_length=72)
 
     @field_validator("email")
     @classmethod
@@ -76,9 +70,11 @@ class PasswordResetRequest(BaseModel):
 
 
 class PasswordResetConfirm(BaseModel):
-    token: str = Field(min_length=16)
-    new_password: str = Field(min_length=8, max_length=128)
-    confirm_password: str = Field(min_length=8, max_length=128)
+    model_config = ConfigDict(extra="forbid")
+
+    token: str = Field(min_length=16, max_length=256)
+    new_password: str = Field(min_length=8, max_length=72)
+    confirm_password: str = Field(min_length=8, max_length=72)
 
     @field_validator("new_password")
     @classmethod

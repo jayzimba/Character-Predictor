@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchLastTrainingRun, trainDemoModels, trainUploadedModels } from '../../api/training'
+import TableShell from '../../components/ui/TableShell'
 
 function formatPercent(value) {
   if (typeof value !== 'number' || Number.isNaN(value)) {
@@ -134,7 +135,7 @@ export default function ModelTrainingPage() {
             </ul>
           )}
 
-          <div className="overflow-x-auto rounded-xl border border-line bg-card">
+          <TableShell className="">
             <table className="min-w-full text-left text-sm">
               <thead className="border-b border-line text-xs uppercase tracking-wide text-muted">
                 <tr>
@@ -163,7 +164,7 @@ export default function ModelTrainingPage() {
                 ))}
               </tbody>
             </table>
-          </div>
+          </TableShell>
         </section>
       )}
     </div>

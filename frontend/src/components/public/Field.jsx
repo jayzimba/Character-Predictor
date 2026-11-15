@@ -8,7 +8,7 @@ export default function Field({
   children,
 }) {
   const controlClass =
-    'mt-1 w-full rounded-md border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-teal'
+    'mt-1 min-h-11 w-full rounded-md border border-line bg-paper px-3 py-2.5 text-base text-ink outline-none focus:border-teal sm:text-sm'
 
   return (
     <label className="block text-sm text-slate">
@@ -30,4 +30,4 @@ export default function Field({
 }
 
 export const selectClass =
-  'mt-1 w-full rounded-md border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-teal'
+  'mt-1 min-h-11 w-full rounded-md border border-line bg-paper px-3 py-2.5 text-base text-ink outline-none focus:border-teal sm:text-sm'

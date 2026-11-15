@@ -284,13 +284,16 @@ Envelope:
 | `/api/personality-types` | public descriptions | Public or auth |
 | `/api/assessments` | create, answers, submit, list mine | USER |
 | `/api/predictions` | classify, get by assessment | Owner or ADMIN |
-| `/api/admin/users` | list/manage users | ADMIN |
-| `/api/admin/questions` | CRUD / activate | ADMIN |
+| `/api/results` | latest and by assessment, with type write-up | Owner or ADMIN |
+| `/api/history` | list own assessments with stored type/confidence | USER |
+| `/api/admin/users` | list users (no password hashes) | ADMIN |
+| `/api/admin/audit-logs` | administrator actions, no Likert answers | ADMIN |
+| `/api/admin/questions` | list, create, update, deactivate | ADMIN |
 | `/api/admin/assessments` | overview / export | ADMIN |
 | `/api/admin/datasets` | validate CSV, DEMO preview, collected features | ADMIN |
 | `/api/admin/models` | train DT/NB/KNN; evaluate and activate later | ADMIN |
 | `/api/models` | list, train, activate, metrics | ADMIN |
-| `/api/analytics` | distributions, time series | ADMIN |
+| `/api/analytics` | stored distributions and activity series, no Likert answers | ADMIN |
 
 Routers stay thin. Services orchestrate. Repositories query. ML lives in `app/ml`.
 
@@ -313,17 +316,21 @@ Routers stay thin. Services orchestrate. Repositories query. ML lives in `app/ml
 | 11 | Train Decision Tree, Naive Bayes, KNN | **Complete** |
 | 12 | Model evaluation and registry | **Complete** |
 | 13 | Prediction API | **Complete** |
-| 14 | Personality results dashboard | Not started |
-| 15 | Assessment history | Not started |
-| 16 | Admin dashboard | Not started |
-| 17 | Admin questions management | Not started |
-| 18 | ML model administration | Not started |
-| 19 | Analytics | Not started |
-| 20 | Security, validation, testing | Not started |
-| 21 | UI polishing and responsiveness | Not started |
+| 14 | Personality results dashboard | **Complete** |
+| 15 | Assessment history | **Complete** |
+| 16 | Admin dashboard | **Complete** |
+| 17 | Admin questions management | **Complete** |
+| 18 | ML model administration | **Complete** |
+| 19 | Analytics | **Complete** |
+| 20 | Security, validation, testing | **Complete** |
+| 21 | UI polishing and responsiveness | **Complete** |
 | 22 | Documentation and deployment preparation | Not started |
 
 **Rule:** do not start the next phase until the current one is verified.
+
+Phase 20 controls: security headers on every response; OpenAPI hidden when `APP_DEBUG` is false; bcrypt passwords capped at 72 bytes; JWT claims are `sub`/`role`/`iat`/`exp` while RBAC still reads the role from MySQL; auth routes are rate-limited; validation errors never echo submitted values; administrators can list `audit_logs` without Likert answers.
+
+Phase 21: public and dashboard shells collapse to a menu on small screens; tables scroll horizontally with a swipe hint; Likert options stay on one row; skip-to-content and `:focus-visible` are present. Scoring and classification are unchanged.
 
 ---
 

@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom'
+import BrandLogo from '../BrandLogo'
 import { useAuth } from '../../context/AuthContext'
 
 export default function SiteFooter() {
   const { user, isAdmin } = useAuth()
   return (
     <footer className="border-t border-line bg-card">
-      <div className="mx-auto grid max-w-6xl gap-10 px-6 py-12 md:grid-cols-4">
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-10 sm:px-6 md:grid-cols-4 md:py-12">
         <div className="md:col-span-2">
-          <p className="text-sm font-semibold tracking-wide text-teal">Temperament Lab</p>
+          <BrandLogo />
           <p className="mt-3 max-w-md text-sm leading-relaxed text-slate">
             A research platform for personality classification using classical
             data-mining algorithms. Built for education, comparison of models,
@@ -65,7 +66,7 @@ export default function SiteFooter() {
         </div>
       </div>
       <div className="border-t border-line">
-        <p className="mx-auto max-w-6xl px-6 py-5 text-xs leading-relaxed text-muted">
+        <p className="mx-auto max-w-6xl px-4 py-5 text-xs leading-relaxed text-muted sm:px-6">
           This assessment is intended for educational, research and
           personal-development purposes and should not be considered a clinical
           psychological diagnosis.

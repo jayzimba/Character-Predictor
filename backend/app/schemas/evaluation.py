@@ -53,6 +53,25 @@ class RegistryMetricOut(BaseModel):
     cv_folds: int | None = None
     cv_mean_accuracy: float | None = None
 
+    @classmethod
+    def from_metric(cls, metric) -> "RegistryMetricOut":
+        return cls(
+            accuracy=float(metric.accuracy),
+            precision_macro=float(metric.precision_macro),
+            recall_macro=float(metric.recall_macro),
+            f1_macro=float(metric.f1_macro),
+            precision_weighted=float(metric.precision_weighted),
+            recall_weighted=float(metric.recall_weighted),
+            f1_weighted=float(metric.f1_weighted),
+            confusion_matrix=metric.confusion_matrix,
+            cv_folds=metric.cv_folds,
+            cv_mean_accuracy=(
+                float(metric.cv_mean_accuracy)
+                if metric.cv_mean_accuracy is not None
+                else None
+            ),
+        )
+
 
 class RegistryModelOut(BaseModel):
     id: int
@@ -68,4 +87,39 @@ class RegistryModelOut(BaseModel):
     trained_at: datetime | None = None
     notes: str | None = None
     selected: bool = False
+    prediction_count: int = 0
+    artifact_present: bool = False
     metrics: RegistryMetricOut | None = None
+
+    @classmethod
+    def from_model(
+        cls,
+        model,
+        *,
+        selected: bool,
+        prediction_count: int = 0,
+        artifact_present: bool = False,
+    ) -> "RegistryModelOut":
+        metric = model.metrics[0] if model.metrics else None
+        return cls(
+            id=model.id,
+            algorithm=model.algorithm,
+            version=model.version,
+            status=model.status,
+            dataset_name=model.dataset_name,
+            dataset_size=model.dataset_size,
+            train_size=model.train_size,
+            test_size=model.test_size,
+            is_synthetic_dataset=model.is_synthetic_dataset,
+            file_path=model.file_path,
+            trained_at=model.trained_at,
+            notes=model.notes,
+            selected=selected,
+            prediction_count=prediction_count,
+            artifact_present=artifact_present,
+            metrics=RegistryMetricOut.from_metric(metric) if metric else None,
+        )
+
+
+class ModelNotesPatch(BaseModel):
+    notes: str = Field(min_length=0, max_length=2000)
